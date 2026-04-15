@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool cameraRelativeMovement = true;
     [Tooltip("Optional camera transform. If null the script will try Camera.main at Awake().")]
     [SerializeField] private Transform cameraTransform = null;
+    [Header("Input")]
+    [Tooltip("Optional Input Action reference for the Move action. If assigned the script will read movement from this action automatically.")]
+    [SerializeField] private InputActionReference moveAction = null;
 
     // internal storage for input
     private Vector2 moveInput = Vector2.zero;
@@ -26,6 +29,18 @@ public class PlayerController : MonoBehaviour
 
         // Good defaults for a rolling ball
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+    }
+
+    void OnEnable()
+    {
+        if (moveAction != null && moveAction.action != null)
+            moveAction.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (moveAction != null && moveAction.action != null)
+            moveAction.action.Disable();
     }
 
     /// <summary>
@@ -48,6 +63,12 @@ public class PlayerController : MonoBehaviour
     private void ApplyMovement()
     {
         if (rb == null) return;
+
+        // If an InputActionReference was assigned, read its current value each FixedUpdate
+        if (moveAction != null && moveAction.action != null && moveAction.action.enabled)
+        {
+            moveInput = moveAction.action.ReadValue<Vector2>();
+        }
 
         // Convert 2D input to world-space direction
         Vector3 desired = new Vector3(moveInput.x, 0f, moveInput.y);
@@ -89,7 +110,7 @@ public class PlayerController : MonoBehaviour
     // Public setters/getters for runtime tweaking
     public void SetMoveSpeed(float speed) => moveSpeed = speed;
     public void SetMaxSpeed(float max) => maxSpeed = max;
-    public void SetCameraRelative(bool enabled) => cameraRelativeMovement = enabled;
+    public void SetCameraRelative(bool isEnabled) => cameraRelativeMovement = isEnabled;
     public void SetCameraTransform(Transform t) => cameraTransform = t;
 }
 
