@@ -5,172 +5,93 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    [Tooltip("Acceleration applied to the ball (ForceMode.Acceleration)")]
-    [SerializeField] private float speed = 15f;
-    [Tooltip("Maximum horizontal speed (m/s)")]
+    [Tooltip("Force multiplier applied every FixedUpdate based on input.")]
+    [SerializeField] private float moveSpeed = 10f;
+    [Tooltip("Maximum horizontal speed. Set to 0 or negative to disable clamping.")]
     [SerializeField] private float maxSpeed = 8f;
-    [Tooltip("If true, movement directions are relative to the camera's forward/right. Otherwise world-relative.")]
-    [SerializeField] private bool useCameraRelative = true;
-    [Tooltip("Optional camera transform; if null the scene's main camera will be used")]
-    [SerializeField] private Transform cameraTransform;
+    [Tooltip("When enabled, movement is relative to the assigned camera's forward/right.")]
+    [SerializeField] private bool cameraRelativeMovement = true;
+    [Tooltip("Optional camera transform. If null the script will try Camera.main at Awake().")]
+    [SerializeField] private Transform cameraTransform = null;
 
-    [Header("Input")]
-    [Tooltip("Assign the Move action (from your Input Actions asset). Use an Input Action Reference pointing to the Player/Move action.")]
-    [SerializeField] private InputActionReference moveAction;
+    // internal storage for input
+    private Vector2 moveInput = Vector2.zero;
+    private Rigidbody rb;
 
-    [Header("Debug")]
-    [Tooltip("Enable verbose debug logging for input and applied forces (useful while debugging movement issues)")]
-    [SerializeField] private bool verboseLogging = false;
-
-    private Vector2 _moveInput = Vector2.zero; // cached input from the Input System
-    private Rigidbody _rb;
-
-    private void Awake()
+    void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
-        if (_rb == null)
-            Debug.LogError("PlayerController requires a Rigidbody but none was found.");
-
-        // Quick runtime checks to surface common configuration problems that stop movement
-        if (_rb != null)
-        {
-            if (_rb.isKinematic)
-                Debug.LogWarning("Player Rigidbody is kinematic — physics forces won't move it. Set isKinematic=false to allow movement.");
-            if (gameObject.isStatic)
-                Debug.LogWarning("Player GameObject is marked Static — Unity may prevent physics-driven movement.");
-        }
-    }
-
-    private void OnEnable()
-    {
-        // ensure camera reference
+        rb = GetComponent<Rigidbody>();
         if (cameraTransform == null && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
-        if (moveAction != null && moveAction.action != null)
-        {
-            moveAction.action.performed += OnMovePerformed;
-            moveAction.action.canceled += OnMoveCanceled;
-            // Ensure the action is enabled so it will produce values. If it's part of a larger asset
-            // that you enable elsewhere, this call is safe because Enable is idempotent.
-            moveAction.action.Enable();
-        }
+        // Good defaults for a rolling ball
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
     }
 
-    private void OnDisable()
+    /// <summary>
+    /// Callback expected to be wired from a PlayerInput (Behavior = Invoke Unity Events)
+    /// or by using the old SendMessage style with the Input System. The action should
+    /// be a Value type with Vector2 binding (e.g. WASD/left stick).
+    /// </summary>
+    /// <param name="value">InputValue provided by the Input System</param>
+    public void OnMove(InputValue value)
     {
-        if (moveAction != null && moveAction.action != null)
-        {
-            moveAction.action.performed -= OnMovePerformed;
-            moveAction.action.canceled -= OnMoveCanceled;
-            // Do not disable the whole asset here; we only disable the specific action reference if desired.
-            moveAction.action.Disable();
-        }
+        if (value == null) return;
+        moveInput = value.Get<Vector2>();
     }
 
-    private void OnMovePerformed(InputAction.CallbackContext ctx)
+    void FixedUpdate()
     {
-        _moveInput = ctx.ReadValue<Vector2>();
+        ApplyMovement();
     }
 
-    private void OnMoveCanceled(InputAction.CallbackContext ctx)
+    private void ApplyMovement()
     {
-        _moveInput = Vector2.zero;
-    }
+        if (rb == null) return;
 
-    private void FixedUpdate()
-    {
-        // convert 2D input to 3D movement direction
-        Vector3 inputDir = new Vector3(_moveInput.x, 0f, _moveInput.y);
+        // Convert 2D input to world-space direction
+        Vector3 desired = new Vector3(moveInput.x, 0f, moveInput.y);
 
-        // If no Input Action Reference is assigned or enabled, try to read input directly
-        // from common devices so the player still responds. This allows the script to
-        // work even if the moveAction reference wasn't set in the inspector.
-        if ((moveAction == null || moveAction.action == null || !moveAction.action.enabled) && _moveInput == Vector2.zero)
+        if (cameraRelativeMovement && cameraTransform != null)
         {
-            // Try Gamepad
-            if (UnityEngine.InputSystem.Gamepad.current != null)
-            {
-                Vector2 gp = UnityEngine.InputSystem.Gamepad.current.leftStick.ReadValue();
-                if (gp != Vector2.zero)
-                    inputDir = new Vector3(gp.x, 0f, gp.y);
-            }
-            // Try Keyboard (WASD / arrow keys)
-            else if (UnityEngine.InputSystem.Keyboard.current != null)
-            {
-                var kb = UnityEngine.InputSystem.Keyboard.current;
-                float x = (kb.dKey.isPressed ? 1f : 0f) + (kb.rightArrowKey.isPressed ? 1f : 0f) - (kb.aKey.isPressed ? 1f : 0f) - (kb.leftArrowKey.isPressed ? 1f : 0f);
-                float y = (kb.wKey.isPressed ? 1f : 0f) + (kb.upArrowKey.isPressed ? 1f : 0f) - (kb.sKey.isPressed ? 1f : 0f) - (kb.downArrowKey.isPressed ? 1f : 0f);
-                if (Mathf.Abs(x) > 0f || Mathf.Abs(y) > 0f)
-                    inputDir = new Vector3(x, 0f, y);
-            }
-            // Fallback to legacy Input (if project still has it enabled)
-            else
-            {
-                float lx = UnityEngine.Input.GetAxisRaw("Horizontal");
-                float ly = UnityEngine.Input.GetAxisRaw("Vertical");
-                if (Mathf.Abs(lx) > 0f || Mathf.Abs(ly) > 0f)
-                    inputDir = new Vector3(lx, 0f, ly);
-            }
-        }
-
-        Vector3 moveDir;
-        if (useCameraRelative && cameraTransform != null)
-        {
+            // Project camera forward on the XZ plane and build a right vector
             Vector3 camForward = cameraTransform.forward;
             camForward.y = 0f;
             camForward.Normalize();
-
             Vector3 camRight = cameraTransform.right;
             camRight.y = 0f;
             camRight.Normalize();
 
-            moveDir = camRight * inputDir.x + camForward * inputDir.z;
-        }
-        else
-        {
-            moveDir = inputDir;
+            desired = camRight * moveInput.x + camForward * moveInput.y;
         }
 
-        if (moveDir.sqrMagnitude > 0f)
+        if (desired.sqrMagnitude > 1f)
+            desired.Normalize();
+
+        // Apply force. ForceMode.Force makes it frame-rate independent when used in FixedUpdate.
+        Vector3 force = desired * moveSpeed;
+        rb.AddForce(force, ForceMode.Force);
+
+        // Optionally clamp horizontal speed while preserving vertical velocity (gravity/jumps)
+        if (maxSpeed > 0f)
         {
-            // apply acceleration-style force so physics integration handles momentum
-            Vector3 applied = moveDir.normalized * speed;
-            _rb.AddForce(applied, ForceMode.Acceleration);
-            if (verboseLogging)
+            Vector3 horizontalVel = rb.linearVelocity;
+            horizontalVel.y = 0f;
+            float speed = horizontalVel.magnitude;
+            if (speed > maxSpeed)
             {
-                Debug.Log($"Applying force {applied} (speed={speed}) — inputDir={inputDir} moveDir={moveDir}");
+                Vector3 limited = horizontalVel.normalized * maxSpeed;
+                rb.linearVelocity = new Vector3(limited.x, rb.linearVelocity.y, limited.z);
             }
-        }
-
-        if (verboseLogging)
-        {
-            // draw direction we want to move along so user can visually inspect
-            Debug.DrawRay(transform.position, moveDir.normalized, Color.green);
-        }
-
-        // clamp horizontal velocity to maxSpeed while preserving vertical velocity (gravity, jumps, slopes)
-        // Use Rigidbody.linearVelocity (project uses this API); velocity is marked obsolete in this project.
-        Vector3 currentVel = _rb.linearVelocity;
-        Vector3 horizontalVel = new Vector3(currentVel.x, 0f, currentVel.z);
-        float horizontalSpeed = horizontalVel.magnitude;
-        if (horizontalSpeed > maxSpeed)
-        {
-            Vector3 limitedHorizontal = horizontalVel.normalized * maxSpeed;
-            _rb.linearVelocity = new Vector3(limitedHorizontal.x, currentVel.y, limitedHorizontal.z);
-        }
-
-        // Additional diagnostics to help debug why movement may not occur
-        if (verboseLogging)
-        {
-            Debug.Log($"[PlayerController] input={_moveInput} inputDir={inputDir} moveDir={moveDir} currentVel={currentVel} isKinematic={_rb.isKinematic} isStatic={gameObject.isStatic} constraints={_rb.constraints}");
         }
     }
 
-    // Optional: allow other scripts to read current input
-    public Vector2 GetMoveInput() => _moveInput;
+    // Public setters/getters for runtime tweaking
+    public void SetMoveSpeed(float speed) => moveSpeed = speed;
+    public void SetMaxSpeed(float max) => maxSpeed = max;
+    public void SetCameraRelative(bool enabled) => cameraRelativeMovement = enabled;
+    public void SetCameraTransform(Transform t) => cameraTransform = t;
 }
-
 
 
 

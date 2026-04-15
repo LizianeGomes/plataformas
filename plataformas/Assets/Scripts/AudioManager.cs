@@ -1,15 +1,15 @@
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class AudioManager : MonoBehaviour
 {
+
     private AudioSource systemSource;
-    private List<AudioSource> activateSources;
-
+    private List<AudioSource> activeSources;
+    
     #region Singleton
-
     public static AudioManager Instance;
 
     private void Awake()
@@ -19,46 +19,34 @@ public class AudioManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             systemSource = GetComponent<AudioSource>();
-            activateSources = new List<AudioSource>();
+            activeSources = new List<AudioSource>();
         }
         else
         {
             Destroy(gameObject);
         }
     }
-
-
     #endregion
-
+    
     #region AudioControls
 
-    public void Play(AudioClip clip, AudioSource source)
+    public void Play(AudioClip clip)
     {
-        if(!activateSources.Contains(source)) 
-            activateSources.Add(source);
-        source.Stop();
-        source.clip = clip;
-        source.Play();
-        
+        systemSource.Stop();
+        systemSource.clip = clip;
+        systemSource.Play();
     }
 
-    
-    public void Stop(AudioSource source)
+    public void Stop()
     {
-        if(activateSources.Contains(source))
-        source.Stop(); 
-        activateSources.Remove(source);
-        
+        systemSource.Stop();
     }
-    
-    
+
     public void Pause()
     {
-        if()
         systemSource.Pause();
     }
 
-    
     public void Resume()
     {
         systemSource.UnPause();
@@ -69,6 +57,38 @@ public class AudioManager : MonoBehaviour
         systemSource.PlayOneShot(clip);
     }
     
-    #endregion
+    public void Play(AudioClip clip, AudioSource source)
+    {
+        if(!activeSources.Contains(source)) 
+            activeSources.Add(source);
+        source.Stop();
+        source.clip = clip;
+        source.Play();
+    }
 
+    public void Stop(AudioSource source)
+    {
+        if(activeSources.Contains(source))
+            source.Stop();
+        activeSources.Remove(source);
+    }
+
+    public void Pause(AudioSource source)
+    {
+        if(activeSources.Contains(source))
+            source.Pause();
+    }
+
+    public void Resume(AudioSource source)
+    {
+        if(activeSources.Contains(source))
+            source.UnPause();
+    }
+
+    public void PlayOneShot(AudioClip clip, AudioSource source)
+    {
+        source.PlayOneShot(clip);
+    }
+    
+    #endregion
 }
