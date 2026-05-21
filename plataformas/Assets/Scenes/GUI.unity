@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257c72bd823e057499ecf26ba84b72e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GUIController
-  textoMoedas: {fileID: 0}
+  textoMoedas: {fileID: 1389903391}
 --- !u!4 &905869371
 Transform:
   m_ObjectHideFlags: 0
