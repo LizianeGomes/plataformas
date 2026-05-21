@@ -102,4 +102,6 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Input atribuído ao jogador");
     }
+
+    
 }

@@ -18,6 +18,8 @@ public class PlayerCoins : MonoBehaviour
     {
         moedas += valor;
 
-        Debug.Log("Moedas: " + moedas);
+        Debug.Log("Pegou moeda");
     }
+
+    
 }
