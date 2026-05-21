@@ -5,22 +5,20 @@ public class GUIController : MonoBehaviour
 {
     public TextMeshProUGUI textoMoedas;
 
-    int moedas = 0;
-
     private void OnEnable()
     {
-        PlayerOM.OnMoedaColetada += AtualizarMoedas;
+        PlayerOM.OnMoedaMudou += AtualizarTexto;
     }
 
     private void OnDisable()
     {
-        PlayerOM.OnMoedaColetada -= AtualizarMoedas;
+        PlayerOM.OnMoedaMudou -= AtualizarTexto;
     }
 
-    void AtualizarMoedas(int valor)
+    void AtualizarTexto(int quantidade)
     {
-        moedas += valor;
+        Debug.Log("GUI atualizou");
 
-        textoMoedas.text = "Moedas: " + moedas;
+        textoMoedas.text = "Moedas: " + quantidade;
     }
 }

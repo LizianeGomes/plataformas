@@ -4,22 +4,13 @@ public class PlayerCoins : MonoBehaviour
 {
     int moedas = 0;
 
-    private void OnEnable()
+    public void ColetarMoeda()
     {
-        PlayerOM.OnMoedaColetada += AdicionarMoeda;
+        moedas++;
+
+        Debug.Log("Moedas coletadas: " + moedas);
+
+        
+        PlayerOM.NotificarMoeda(moedas);
     }
-
-    private void OnDisable()
-    {
-        PlayerOM.OnMoedaColetada -= AdicionarMoeda;
-    }
-
-    void AdicionarMoeda(int valor)
-    {
-        moedas += valor;
-
-        Debug.Log("Pegou moeda");
-    }
-
-    
 }

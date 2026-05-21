@@ -1,11 +1,14 @@
+using UnityEngine;
 using System;
 
 public static class PlayerOM
 {
-    public static Action<int> OnMoedaColetada;
+    public static Action<int> OnMoedaMudou;
 
-    public static void ColetarMoeda(int quantidade)
+    public static void NotificarMoeda(int quantidade)
     {
-        OnMoedaColetada?.Invoke(quantidade);
+        Debug.Log("Observer notificou: " + quantidade);
+
+        OnMoedaMudou?.Invoke(quantidade);
     }
 }

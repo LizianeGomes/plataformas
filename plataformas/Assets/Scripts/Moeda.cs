@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class Coin : MonoBehaviour
+public class Moeda : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-           
-            PlayerOM.ColetarMoeda(1);
-
             
+            other.GetComponent<PlayerCoins>().ColetarMoeda();
+
+           
             Destroy(gameObject);
         }
     }
