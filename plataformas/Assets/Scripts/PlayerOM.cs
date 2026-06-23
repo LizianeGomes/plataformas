@@ -5,6 +5,7 @@ public static class PlayerOM
 {
     public static Action OnIncrementCoin;
     public static Action<int> OnCoinAdded;
+    public static Action<int, float> OnCooldownMudou;
 
     public static void NotificarMoeda()
     {
