@@ -31,6 +31,10 @@ public class BolinhaController : MonoBehaviour
     private float ultimoEmpurrao;
 
 
+    public float GetCooldownPercent()
+    {
+        return Mathf.Clamp01((Time.time - ultimoPush) / cooldown);
+    }
     void Awake()
     {
         rb = GetComponent<Rigidbody>();

@@ -4,23 +4,23 @@ using UnityEngine.UI;
 public class CooldownUI : MonoBehaviour
 {
     public int playerID;
-    public Slider barra;
+    public Image barra;
 
-    private void OnEnable()
+    private BolinhaController jogador;
+
+    void Start()
     {
-        PlayerOM.OnCooldownMudou += Atualizar;
+        GameObject obj = GameObject.Find("BolaP" + playerID);
+
+        if (obj != null)
+            jogador = obj.GetComponent<BolinhaController>();
     }
 
-    private void OnDisable()
+    void Update()
     {
-        PlayerOM.OnCooldownMudou -= Atualizar;
-    }
-
-    void Atualizar(int id, float valor)
-    {
-        if (id != playerID)
+        if (jogador == null)
             return;
 
-        barra.value = valor;
+        barra.fillAmount = jogador.GetCooldownPercent();
     }
 }
