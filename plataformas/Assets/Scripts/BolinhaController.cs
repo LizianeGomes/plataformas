@@ -4,7 +4,12 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BolinhaController : MonoBehaviour
+
 {
+    [Header("Vidas")]
+    public int vidas = 2;
+
+    Vector3 posicaoInicial;
     [Header("Referencias")] public BolinhaController inimigo;
 
     [Header("Movimento")] public float velocidade = 10f;
@@ -22,6 +27,17 @@ public class BolinhaController : MonoBehaviour
     [Header("Jogador")]
     public int playerID;
     
+    
+    [Header("Moedas")]
+    public int moedas = 0;
+    [SerializeField] float bonusForca = 2f;
+    [SerializeField] float bonusMassa = 0.5f;
+    [SerializeField] float perdaVelocidade = 0.5f;
+
+    float velocidadeInicial;
+    float forcaInicial;
+    float massaInicial;
+    
     private Rigidbody rb;
     private float ultimoPush;
     public float forcaEmpurrao = 15f;
@@ -29,6 +45,27 @@ public class BolinhaController : MonoBehaviour
 
 
     private float ultimoEmpurrao;
+    
+    
+    
+    public void ColetarMoeda()
+    {
+        moedas++;
+
+        velocidade -= 0.5f;
+
+        forcaBase += 2f;
+
+        rb.mass += 0.5f;
+
+        if (velocidade < 3f)
+            velocidade = 3f;
+        
+        PlayerOM.AddCoin(playerID);
+
+        Debug.Log(name + " coletou uma moeda. Total: " + moedas);
+       
+    }
 
 
     public float GetCooldownPercent()
@@ -38,6 +75,11 @@ public class BolinhaController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        
+        posicaoInicial = transform.position;
+        velocidadeInicial = velocidade;
+        forcaInicial = forcaBase;
+        massaInicial = rb.mass;
     }
 
     void OnEnable()
@@ -99,6 +141,32 @@ public class BolinhaController : MonoBehaviour
                 (Time.time - ultimoPush) / cooldown);
 
         PlayerOM.OnCooldownMudou?.Invoke(playerID, valor);
+        
+    }
+    
+    public void PerderVida()
+    {
+        vidas--;
+
+        Debug.Log(name + " perdeu uma vida! Restam: " + vidas);
+
+        if (vidas <= 0)
+        {
+            GameManager.Instance.FimDeJogo(this);
+        }
+        else
+        {
+            Respawn();
+        }
+    }
+
+    void Respawn()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        transform.position = posicaoInicial;
+        transform.rotation = Quaternion.identity;
     }
 }
     

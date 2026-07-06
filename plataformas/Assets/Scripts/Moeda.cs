@@ -4,10 +4,11 @@ public class Moeda : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            PlayerOM.NotificarMoeda();
+        BolinhaController jogador = other.GetComponent<BolinhaController>();
 
+        if (jogador != null)
+        {
+            jogador.ColetarMoeda();
             Destroy(gameObject);
         }
     }

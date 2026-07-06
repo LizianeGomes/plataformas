@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
         Iniciando,
         MenuPrincipal,
         Gameplay
+        
     }
 
     public GameState estadoAtual;
@@ -20,7 +21,6 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -103,5 +103,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("Input atribuído ao jogador");
     }
 
+    public void FimDeJogo(BolinhaController perdedor)
+    {
+        Debug.Log(perdedor.name + " perdeu!");
+
+        CarregarCena("MenuPrincipal");
+    }
     
 }
