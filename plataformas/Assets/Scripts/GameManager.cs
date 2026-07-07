@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public int vencedor;
 
     public enum GameState
     {
@@ -86,6 +87,12 @@ public class GameManager : MonoBehaviour
                 }
 
                 break;
+            
+            case "Vitoria":
+               
+                SceneManager.LoadScene("Vitoria");
+               
+                break;
 
             default:
 
@@ -107,7 +114,25 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log(perdedor.name + " perdeu!");
 
-        CarregarCena("MenuPrincipal");
+        if (perdedor.playerID == 1)
+            vencedor = 2;
+        else
+            vencedor = 1;
+
+        CarregarCena("Vitoria");
+    }
+    
+    public void ReiniciarRound(BolinhaController jogador1, BolinhaController jogador2)
+    {
+        jogador1.Respawn();
+        jogador2.Respawn();
+
+        GameObject[] moedas = GameObject.FindGameObjectsWithTag("Coin");
+
+        foreach (GameObject moeda in moedas)
+        {
+            Destroy(moeda);
+        }
     }
     
 }

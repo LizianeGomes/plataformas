@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class BolinhaController : MonoBehaviour
 
 {
+    public BolinhaData dados;
     [Header("Vidas")]
     public int vidas = 2;
 
@@ -80,6 +81,12 @@ public class BolinhaController : MonoBehaviour
         velocidadeInicial = velocidade;
         forcaInicial = forcaBase;
         massaInicial = rb.mass;
+        velocidade = dados.velocidade;
+        forcaBase = dados.forca;
+
+        rb.mass = dados.massa;
+
+        transform.localScale = Vector3.one * dados.tamanho;
     }
 
     void OnEnable()
@@ -148,7 +155,7 @@ public class BolinhaController : MonoBehaviour
     {
         vidas--;
 
-        Debug.Log(name + " perdeu uma vida! Restam: " + vidas);
+        Debug.Log(name + " perdeu uma vida.");
 
         if (vidas <= 0)
         {
@@ -156,11 +163,11 @@ public class BolinhaController : MonoBehaviour
         }
         else
         {
-            Respawn();
+            GameManager.Instance.ReiniciarRound(this, inimigo);
         }
     }
 
-    void Respawn()
+    public void Respawn()
     {
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
