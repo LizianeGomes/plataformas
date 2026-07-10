@@ -4,7 +4,6 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BolinhaController : MonoBehaviour
-
 {
     public BolinhaData dados;
     [Header("Vidas")]
@@ -76,17 +75,31 @@ public class BolinhaController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        
+
         posicaoInicial = transform.position;
+
         velocidadeInicial = velocidade;
         forcaInicial = forcaBase;
         massaInicial = rb.mass;
-        velocidade = dados.velocidade;
-        forcaBase = dados.forca;
+    }
+    void Start()
+    {
+        Debug.Log("Jogador " + playerID);
 
-        rb.mass = dados.massa;
+        Debug.Log(GameSetup.Instance.jogador1.ballName);
 
-        transform.localScale = Vector3.one * dados.tamanho;
+        Debug.Log(GameSetup.Instance.jogador2.ballName);
+
+        if (playerID == 1)
+            AplicarDados(GameSetup.Instance.jogador1);
+        else
+            AplicarDados(GameSetup.Instance.jogador2);
+        
+        if (playerID == 1)
+            AplicarDados(GameSetup.Instance.jogador1);
+
+        else
+            AplicarDados(GameSetup.Instance.jogador2);
     }
 
     void OnEnable()
@@ -108,6 +121,8 @@ public class BolinhaController : MonoBehaviour
     void FixedUpdate()
     {
         Vector2 move = moveAction.action.ReadValue<Vector2>();
+
+        
 
         Vector3 dir = new Vector3(move.x, 0, move.y);
 
@@ -174,6 +189,20 @@ public class BolinhaController : MonoBehaviour
 
         transform.position = posicaoInicial;
         transform.rotation = Quaternion.identity;
+    }
+    public void AplicarDados(BolinhaData novaBolinha)
+    {
+        dados = novaBolinha;
+
+        velocidade = dados.initialVelocity;
+        forcaBase = dados.basePushForce;
+
+        rb.mass = dados.baseMass;
+
+        transform.localScale = Vector3.one * dados.visualScale;
+        
+
+        GetComponent<MeshRenderer>().material = dados.material;
     }
 }
     

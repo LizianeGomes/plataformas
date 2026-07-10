@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public int vencedor;
+    public int pontosP1;
+    public int pontosP2;
 
     public enum GameState
     {
@@ -65,6 +67,12 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene("MenuPrincipal");
 
                 MudarEstado(GameState.MenuPrincipal);
+
+                break;
+           
+            case "SelecaoBolinhas":
+
+                SceneManager.LoadScene("SelecaoBolinhas");
 
                 break;
 
@@ -134,5 +142,6 @@ public class GameManager : MonoBehaviour
             Destroy(moeda);
         }
     }
+    
     
 }

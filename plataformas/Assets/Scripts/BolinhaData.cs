@@ -1,17 +1,17 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Bolinha", menuName = "Sumo/Bolinha")]
+[CreateAssetMenu(fileName = "NewBallData", menuName = "Sumo/BallData")]
 public class BolinhaData : ScriptableObject
 {
-    public string nome;
-
+    public string ballName;
+    public float initialVelocity;
+    public float basePushForce;
+    public float baseMass;
+    public float visualScale = 1f;
+    public float forceCooldownTime = 2f;
+    public GameObject prefab;   
+    
+    public Color player1Color;
+    public Color player2Color;
     public Material material;
-
-    public float velocidade = 10;
-
-    public float forca = 20;
-
-    public float massa = 1;
-
-    public float tamanho = 1;
-}
+} 

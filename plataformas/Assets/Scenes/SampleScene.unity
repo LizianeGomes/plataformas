@@ -231,7 +231,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 729620492}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &729620496
 Transform:
   m_ObjectHideFlags: 0
@@ -1056,7 +1056,7 @@ MonoBehaviour:
   moedaPrefab: {fileID: 3701034489321775402, guid: 847d7a6092135ef4a9219c4da699eb2b, type: 3}
   tempoSpawn: 5
   centroArena: {x: 0, y: 0, z: 0}
-  tamanhoArena: {x: 43.97174, y: 0, z: 0}
+  tamanhoArena: {x: 8, y: 0, z: 8}
   maxMoedas: 3
 --- !u!4 &1365111713
 Transform:

@@ -4,7 +4,7 @@ public class MenuPrincipalUI : MonoBehaviour
 {
     public void IniciarJogo()
     {
-        GameManager.Instance.CarregarCena("SampleScene");
+        GameManager.Instance.CarregarCena("SelecaoBolinhas");
     }
 
     public void SairJogo()
