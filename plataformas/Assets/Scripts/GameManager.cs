@@ -131,17 +131,20 @@ public class GameManager : MonoBehaviour
     }
     
     public void ReiniciarRound(BolinhaController jogador1, BolinhaController jogador2)
+{
+    jogador1.Respawn();
+    jogador2.Respawn();
+
+    jogador1.ResetarStatus();
+    jogador2.ResetarStatus();
+
+    GameObject[] moedas = GameObject.FindGameObjectsWithTag("Coin");
+
+    foreach (GameObject moeda in moedas)
     {
-        jogador1.Respawn();
-        jogador2.Respawn();
-
-        GameObject[] moedas = GameObject.FindGameObjectsWithTag("Coin");
-
-        foreach (GameObject moeda in moedas)
-        {
-            Destroy(moeda);
-        }
+        Destroy(moeda);
     }
+}
     
     
 }

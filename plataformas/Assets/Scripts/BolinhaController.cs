@@ -48,24 +48,21 @@ public class BolinhaController : MonoBehaviour
     
     
     
-    public void ColetarMoeda()
-    {
-        moedas++;
+   public void ColetarMoeda()
+{
+    moedas++;
 
-        velocidade -= 0.5f;
+    velocidade -= perdaVelocidade;
+    forcaBase += bonusForca;
+    rb.mass += bonusMassa;
 
-        forcaBase += 2f;
+    if (velocidade < 3f)
+        velocidade = 3f;
 
-        rb.mass += 0.5f;
+    PlayerOM.AddCoin(playerID, moedas);
 
-        if (velocidade < 3f)
-            velocidade = 3f;
-        
-        PlayerOM.AddCoin(playerID);
-
-        Debug.Log(name + " coletou uma moeda. Total: " + moedas);
-       
-    }
+    
+}
 
 
     public float GetCooldownPercent()
@@ -166,21 +163,24 @@ public class BolinhaController : MonoBehaviour
         
     }
     
-    public void PerderVida()
+  public void PerderVida()
+{
+    vidas--;
+
+    Debug.Log(name + " perdeu uma vida.");
+    Debug.Log("Vidas restantes: " + vidas);
+
+    if (vidas <= 0)
     {
-        vidas--;
-
-        Debug.Log(name + " perdeu uma vida.");
-
-        if (vidas <= 0)
-        {
-            GameManager.Instance.FimDeJogo(this);
-        }
-        else
-        {
-            GameManager.Instance.ReiniciarRound(this, inimigo);
-        }
+        Debug.Log(">>> CHAMOU FIM DE JOGO <<<");
+        GameManager.Instance.FimDeJogo(this);
     }
+    else
+    {
+        Debug.Log(">>> REINICIANDO ROUND <<<");
+        GameManager.Instance.ReiniciarRound(this, inimigo);
+    }
+}
 
     public void Respawn()
     {
@@ -190,6 +190,8 @@ public class BolinhaController : MonoBehaviour
         transform.position = posicaoInicial;
         transform.rotation = Quaternion.identity;
     }
+
+    
     public void AplicarDados(BolinhaData novaBolinha)
     {
         dados = novaBolinha;
@@ -203,6 +205,24 @@ public class BolinhaController : MonoBehaviour
         
 
         GetComponent<MeshRenderer>().material = dados.material;
+
+        MeshRenderer mr = GetComponent<MeshRenderer>();
+
+ if (playerID == 1)
+    mr.material.color = Color.blue;
+ else
+    mr.material.color = Color.red;
     }
+
+    public void ResetarStatus()
+ {
+     moedas = 0;
+
+    velocidade = velocidadeInicial;
+    forcaBase = forcaInicial;
+    rb.mass = massaInicial;
+
+    PlayerOM.AddCoin(playerID, moedas);
+ }
 }
     

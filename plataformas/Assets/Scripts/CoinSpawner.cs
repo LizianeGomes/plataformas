@@ -10,7 +10,7 @@ public class CoinSpawner : MonoBehaviour
 
     public Vector3 tamanhoArena;
     
-    public int maxMoedas = 3;
+    public int maxMoedas = 10;
 
     void Start()
     {

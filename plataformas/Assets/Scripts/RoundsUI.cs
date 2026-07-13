@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CooldownUI : MonoBehaviour
+public class RoundsUI : MonoBehaviour
 {
-    public Image barraP1;
-    public Image barraP2;
+    public Image p1Round1;
+    public Image p1Round2;
+
+    public Image p2Round1;
+    public Image p2Round2;
 
     BolinhaController jogador1;
     BolinhaController jogador2;
@@ -16,7 +19,8 @@ public class CooldownUI : MonoBehaviour
 
     void ProcurarJogadores()
     {
-        BolinhaController[] jogadores = FindObjectsByType<BolinhaController>(FindObjectsSortMode.None);
+        BolinhaController[] jogadores =
+            FindObjectsByType<BolinhaController>(FindObjectsSortMode.None);
 
         foreach (BolinhaController jogador in jogadores)
         {
@@ -35,7 +39,10 @@ public class CooldownUI : MonoBehaviour
             return;
         }
 
-        barraP1.fillAmount = jogador1.GetCooldownPercent();
-        barraP2.fillAmount = jogador2.GetCooldownPercent();
+        p1Round1.enabled = jogador1.vidas >= 2;
+        p1Round2.enabled = jogador1.vidas >= 1;
+
+        p2Round1.enabled = jogador2.vidas >= 2;
+        p2Round2.enabled = jogador2.vidas >= 1;
     }
 }
