@@ -7,6 +7,13 @@ public class SelectionController : MonoBehaviour
 
     public TMP_Text textoP1;
     public TMP_Text textoP2;
+    public TMP_Text textoVelocidadeP1;
+ public TMP_Text textoForcaP1;
+ public TMP_Text textoMassaP1;
+
+ public TMP_Text textoVelocidadeP2;
+ public TMP_Text textoForcaP2;
+ public TMP_Text textoMassaP2;
 
     int indiceP1;
     int indiceP2;
@@ -83,8 +90,22 @@ public class SelectionController : MonoBehaviour
     }
 
     void AtualizarTela()
-    {
-        textoP1.text = bolinhas[indiceP1].ballName;
-        textoP2.text = bolinhas[indiceP2].ballName;
-    }
+{
+    BolinhaData bolaP1 = bolinhas[indiceP1];
+    BolinhaData bolaP2 = bolinhas[indiceP2];
+
+    // Nomes
+    textoP1.text = bolaP1.ballName;
+    textoP2.text = bolaP2.ballName;
+
+    // Atributos P1
+    textoVelocidadeP1.text = "Velocidade: " + bolaP1.initialVelocity;
+    textoForcaP1.text = "Força: " + bolaP1.basePushForce;
+    textoMassaP1.text = "Massa: " + bolaP1.baseMass;
+
+    // Atributos P2
+    textoVelocidadeP2.text = "Velocidade: " + bolaP2.initialVelocity;
+    textoForcaP2.text = "Força: " + bolaP2.basePushForce;
+    textoMassaP2.text = "Massa: " + bolaP2.baseMass;
+}
 }
