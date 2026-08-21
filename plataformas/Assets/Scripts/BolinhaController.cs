@@ -20,6 +20,10 @@ public class BolinhaController : MonoBehaviour
 
     [Header("Input")] public InputActionReference moveAction;
     public InputActionReference pushAction;
+    public InputActionReference jumpAction;
+    
+    [Header("Pulo")]
+    public float jumpForce = 8f;
     
     [Header("UI")]
     public UnityEvent<float> OnCooldownChanged;
@@ -102,17 +106,20 @@ public class BolinhaController : MonoBehaviour
     void OnEnable()
     {
         moveAction.action.Enable();
-
+        jumpAction.action.Enable();
         pushAction.action.Enable();
         pushAction.action.performed += OnPush;
+        jumpAction.action.performed += OnJump;
     }
 
     void OnDisable()
     {
         moveAction.action.Disable();
+        jumpAction.action.Disable();
 
         pushAction.action.performed -= OnPush;
         pushAction.action.Disable();
+        jumpAction.action.performed -= OnJump;
     }
 
     void FixedUpdate()
@@ -208,21 +215,27 @@ public class BolinhaController : MonoBehaviour
 
         MeshRenderer mr = GetComponent<MeshRenderer>();
 
- if (playerID == 1)
-    mr.material.color = Color.blue;
- else
-    mr.material.color = Color.red;
-    }
+         if (playerID == 1)
+            mr.material.color = Color.blue;
+         else
+            mr.material.color = Color.red;
+            }
 
-    public void ResetarStatus()
- {
-     moedas = 0;
+            public void ResetarStatus()
+         {
+             moedas = 0;
 
-    velocidade = velocidadeInicial;
-    forcaBase = forcaInicial;
-    rb.mass = massaInicial;
+            velocidade = velocidadeInicial;
+            forcaBase = forcaInicial;
+            rb.mass = massaInicial;
 
-    PlayerOM.AddCoin(playerID, moedas);
- }
-}
+            PlayerOM.AddCoin(playerID, moedas);
+         }
+            
+         void OnJump(InputAction.CallbackContext ctx)
+         {
+             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+         }
+            
+} 
     

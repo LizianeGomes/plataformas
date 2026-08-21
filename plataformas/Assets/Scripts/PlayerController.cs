@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [Header("Input")]
     [Tooltip("Optional Input Action reference for the Move action. If assigned the script will read movement from this action automatically.")]
     [SerializeField] private InputActionReference moveAction = null;
+    [SerializeField] private InputActionReference jumpAction = null;
 
     // internal storage for input
     private Vector2 moveInput = Vector2.zero;
