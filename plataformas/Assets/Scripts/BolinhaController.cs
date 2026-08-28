@@ -85,41 +85,38 @@ public class BolinhaController : MonoBehaviour
     }
     void Start()
     {
-        Debug.Log("Jogador " + playerID);
-
-        Debug.Log(GameSetup.Instance.jogador1.ballName);
-
-        Debug.Log(GameSetup.Instance.jogador2.ballName);
-
-        if (playerID == 1)
-            AplicarDados(GameSetup.Instance.jogador1);
-        else
-            AplicarDados(GameSetup.Instance.jogador2);
-        
-        if (playerID == 1)
-            AplicarDados(GameSetup.Instance.jogador1);
-
-        else
-            AplicarDados(GameSetup.Instance.jogador2);
+        if (dados != null)
+        {
+            AplicarDados(dados);
+        }
     }
 
     void OnEnable()
     {
-        moveAction.action.Enable();
-        jumpAction.action.Enable();
-        pushAction.action.Enable();
-        pushAction.action.performed += OnPush;
-        jumpAction.action.performed += OnJump;
+        if (moveAction != null && moveAction.action != null)
+        {
+            moveAction.action.Enable();
+        }
+
+        if (jumpAction != null && jumpAction.action != null)
+        {
+            jumpAction.action.Enable();
+            jumpAction.action.performed += OnJump;
+        }
     }
 
     void OnDisable()
     {
-        moveAction.action.Disable();
-        jumpAction.action.Disable();
+        if (moveAction != null && moveAction.action != null)
+        {
+            moveAction.action.Disable();
+        }
 
-        pushAction.action.performed -= OnPush;
-        pushAction.action.Disable();
-        jumpAction.action.performed -= OnJump;
+        if (jumpAction != null && jumpAction.action != null)
+        {
+            jumpAction.action.performed -= OnJump;
+            jumpAction.action.Disable();
+        }
     }
 
     void FixedUpdate()
