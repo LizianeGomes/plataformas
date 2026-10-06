@@ -8,12 +8,16 @@ public class SelectionController : MonoBehaviour
     public TMP_Text textoP1;
     public TMP_Text textoP2;
     public TMP_Text textoVelocidadeP1;
+    
  public TMP_Text textoForcaP1;
  public TMP_Text textoMassaP1;
 
  public TMP_Text textoVelocidadeP2;
  public TMP_Text textoForcaP2;
  public TMP_Text textoMassaP2;
+ 
+ public BallPreview previewP1;
+ public BallPreview previewP2;
 
     int indiceP1;
     int indiceP2;
@@ -23,7 +27,14 @@ public class SelectionController : MonoBehaviour
 
     void Start()
     {
-        AtualizarTela();
+        void AtualizarTela()
+        {
+            textoP1.text = bolinhas[indiceP1].ballName;
+            textoP2.text = bolinhas[indiceP2].ballName;
+
+            previewP1.MostrarBolinha(bolinhas[indiceP1]);
+            previewP2.MostrarBolinha(bolinhas[indiceP2]);
+        }
     }
 
     void Update()

@@ -9,7 +9,7 @@ public class BolinhaData : ScriptableObject
     public float baseMass;
     public float visualScale = 1f;
     public float forceCooldownTime = 2f;
-    public GameObject prefab;   
+      
     
     public Color player1Color;
     public Color player2Color;

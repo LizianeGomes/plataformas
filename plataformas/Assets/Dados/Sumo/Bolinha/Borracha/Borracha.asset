@@ -18,6 +18,7 @@ MonoBehaviour:
   baseMass: 1
   visualScale: 1
   forceCooldownTime: 2
+  prefab: {fileID: 3849585052966425690, guid: e1c677f8dc80d104da4973347cd5d2d1, type: 3}
   player1Color: {r: 0, g: 0.10618591, b: 1, a: 0}
   player2Color: {r: 1, g: 0, b: 0, a: 0}
   material: {fileID: 2100000, guid: 3206e0e821fc5354d87dc517a52dc842, type: 2}
