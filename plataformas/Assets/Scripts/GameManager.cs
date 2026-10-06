@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     {
         MudarEstado(GameState.Iniciando);
 
-        // primeira cena
+        
         CarregarCena("Splash");
     }
 
@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // INPUT
+    
     public void AtribuirInput(PlayerInput input)
     {
         playerInput = input;

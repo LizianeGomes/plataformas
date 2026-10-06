@@ -12,7 +12,7 @@ public class BallPreview : MonoBehaviour
 
     public void MostrarBolinha(BolinhaData dados)
     {
-        
+        Debug.Log("MOSTRANDO BOLINHA: " + dados.ballName);
         if (bolinhaAtual != null)
             Destroy(bolinhaAtual);
 
@@ -21,7 +21,15 @@ public class BallPreview : MonoBehaviour
             prefabBolinha,
             pontoPreview.position,
             Quaternion.identity
+            
         );
+        BolinhaController controller =
+            bolinhaAtual.GetComponent<BolinhaController>();
+
+        if (controller != null)
+        {
+            controller.enabled = false;
+        }
 
         
         bolinhaAtual.transform.SetParent(pontoPreview);
@@ -54,7 +62,7 @@ public class BallPreview : MonoBehaviour
             col.enabled = false;
 
         cameraPreview.transform.position =
-            pontoPreview.position + new Vector3(0, 0, -5);
+            pontoPreview.position + new Vector3(0, 0, -2);
 
         
         cameraPreview.transform.LookAt(

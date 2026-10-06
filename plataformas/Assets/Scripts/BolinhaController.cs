@@ -83,20 +83,30 @@ public class BolinhaController : MonoBehaviour
     {
         Debug.Log("Jogador " + playerID);
 
-        Debug.Log(GameSetup.Instance.jogador1.ballName);
+        if (GameSetup.Instance == null)
+            return;
 
-        Debug.Log(GameSetup.Instance.jogador2.ballName);
+        BolinhaData bolinhaEscolhida = null;
 
         if (playerID == 1)
-            AplicarDados(GameSetup.Instance.jogador1);
-        else
-            AplicarDados(GameSetup.Instance.jogador2);
-        
-        if (playerID == 1)
-            AplicarDados(GameSetup.Instance.jogador1);
+            bolinhaEscolhida = GameSetup.Instance.jogador1;
+        else if (playerID == 2)
+            bolinhaEscolhida = GameSetup.Instance.jogador2;
 
-        else
-            AplicarDados(GameSetup.Instance.jogador2);
+        if (bolinhaEscolhida == null)
+        {
+            Debug.LogWarning("Nenhuma bolinha escolhida para o jogador " + playerID);
+            return;
+        }
+
+        Debug.Log(
+            "Bolinha escolhida pelo jogador " +
+            playerID +
+            ": " +
+            bolinhaEscolhida.ballName
+        );
+
+        AplicarDados(bolinhaEscolhida);
     }
 
     void OnEnable()
@@ -172,7 +182,7 @@ public class BolinhaController : MonoBehaviour
 
     if (vidas <= 0)
     {
-        Debug.Log(">>> CHAMOU FIM DE JOGO <<<");
+        Debug.Log(">>>FIM DE JOGO <<<");
         GameManager.Instance.FimDeJogo(this);
     }
     else
@@ -193,7 +203,10 @@ public class BolinhaController : MonoBehaviour
 
     
     public void AplicarDados(BolinhaData novaBolinha)
+    
     {
+        if (novaBolinha == null)
+            return;
         dados = novaBolinha;
 
         velocidade = dados.initialVelocity;
@@ -207,6 +220,10 @@ public class BolinhaController : MonoBehaviour
         GetComponent<MeshRenderer>().material = dados.material;
 
         MeshRenderer mr = GetComponent<MeshRenderer>();
+        if (mr != null && dados.material != null)
+        {
+            mr.material = dados.material;
+        }
 
  if (playerID == 1)
     mr.material.color = Color.blue;
