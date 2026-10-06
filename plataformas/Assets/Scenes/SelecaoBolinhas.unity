@@ -1157,6 +1157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BallPreview
   pontoPreview: {fileID: 1961857008}
   cameraPreview: {fileID: 382623177}
+  prefabBolinha: {fileID: 3849585052966425690, guid: e1c677f8dc80d104da4973347cd5d2d1, type: 3}
 --- !u!4 &564588552
 Transform:
   m_ObjectHideFlags: 0
@@ -1477,6 +1478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BallPreview
   pontoPreview: {fileID: 974434757}
   cameraPreview: {fileID: 1743464885}
+  prefabBolinha: {fileID: 3849585052966425690, guid: e1c677f8dc80d104da4973347cd5d2d1, type: 3}
 --- !u!4 &864798055
 Transform:
   m_ObjectHideFlags: 0
